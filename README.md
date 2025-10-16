@@ -5,3 +5,8 @@ git commit -m "เขียนข้อความสั้นๆ ว่าท�
 git push
 
 mvn spring-boot:run ที่ Lab-test-1
+mvn clean compile
+
+
+java -version
+javac -version
