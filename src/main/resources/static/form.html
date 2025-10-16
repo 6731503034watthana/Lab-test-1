@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <title>ฟอร์มนักเรียน ม.4</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav">
+      <a href="/list.html">ดูข้อมูลทั้งหมด</a>
+      <a href="/form.html">ฟอร์มกรอกข้อมูล</a>
+    </div>
+    <div class="title">ฟอร์มนักเรียน ม.4</div>
+
+    <div class="card">
+      <form id="f" novalidate>
+        <input type="hidden" id="id">
+        <div>
+          <label>ชื่อ</label>
+          <input id="firstName" placeholder="เช่น ปวิช" required>
+        </div>
+        <div>
+          <label>นามสกุล</label>
+          <input id="lastName" placeholder="เช่น สุขใจ" required>
+        </div>
+        <div>
+          <label>สาขาวิชา</label>
+          <select id="major" required>
+            <option value="" disabled selected>เลือกสาขา</option>
+            <option value="SCI_MATH">วิทย์คณิต</option>
+            <option value="MATH_ENGLISH">คณิตอังกฤษ</option>
+            <option value="GENERAL">ทั่วไป</option>
+          </select>
+        </div>
+        <div>
+          <label>เกรด (0.00–4.00)</label>
+          <input id="grade" type="number" min="0" max="4" step="0.01" required>
+        </div>
+        <div>
+          <label>ระดับชั้น</label>
+          <input id="level" value="ม.4" readonly>
+        </div>
+        <div class="toolbar full">
+          <button class="btn" type="submit">บันทึก</button>
+          <button class="btn light" type="button" id="clear">ล้างฟอร์ม</button>
+          <span class="muted">API: <code>/api/students</code></span>
+          <span class="muted" style="margin-left:auto">v4</span>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">บันทึกแล้ว</div>
+
+  <script>
+    const api = '/api/students';
+    const toast = document.getElementById('toast');
+    function showToast(msg){ toast.textContent = msg; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'), 1400); }
+    function setInvalid(el, bad){ el.classList.toggle('is-invalid', bad); }
+
+    // กรอกอัตโนมัติเมื่อมาจาก list.html
+    (function prefill(){
+      const p = new URLSearchParams(location.search);
+      if(!p.has('id')) return;
+      id.value = p.get('id');
+      firstName.value = p.get('fn') || '';
+      lastName.value  = p.get('ln') || '';
+      major.value     = p.get('major') || '';
+      grade.value     = p.get('grade') || '';
+      history.replaceState({}, '', '/form.html'); // ล้าง query
+    })();
+
+    // submit
+    document.getElementById('f').addEventListener('submit', async e=>{
+      e.preventDefault();
+      const payload = {
+        firstName: firstName.value.trim(),
+        lastName:  lastName.value.trim(),
+        major:     major.value,
+        grade:     parseFloat(grade.value),
+        level:     'ม.4'
+      };
+
+      // validation ด้านหน้า
+      const badFirst = payload.firstName.length === 0;
+      const badLast  = payload.lastName.length === 0;
+      const badMajor = !payload.major;
+      const badGrade = Number.isNaN(payload.grade) || payload.grade < 0 || payload.grade > 4;
+
+      setInvalid(firstName,badFirst); setInvalid(lastName,badLast);
+      setInvalid(major,badMajor); setInvalid(grade,badGrade);
+      if(badFirst || badLast || badMajor || badGrade){ return; }
+
+      const _id = id.value;
+      const method = _id ? 'PUT' : 'POST';
+      const url    = _id ? `${api}/${_id}` : api;
+
+      const res = await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      if(!res.ok){ alert('ผิดพลาด: ' + await res.text()); return; }
+
+      showToast(_id ? 'อัปเดตแล้ว' : 'บันทึกแล้ว');
+      e.target.reset(); id.value=''; level.value='ม.4';
+    });
+
+    document.getElementById('clear').onclick = ()=>{ f.reset(); id.value=''; level.value='ม.4'; ['firstName','lastName','major','grade'].forEach(k=>setInvalid(window[k],false)); };
+  </script>
+</body>
+</html>

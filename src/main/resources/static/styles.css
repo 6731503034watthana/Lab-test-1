@@ -1,0 +1,30 @@
+:root{
+  --bg:#f6f7fb; --card:#fff; --line:#e6e8ee; --text:#222; --muted:#667085; --pri:#1a73e8; --pri-600:#1765cc; --danger:#e53935;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--text);background:var(--bg)}
+.container{max-width:1000px;margin:28px auto;padding:0 16px}
+.nav{display:flex;gap:10px;margin-bottom:16px}
+.nav a{padding:8px 12px;border:1px solid var(--line);border-radius:10px;text-decoration:none;color:#234;background:#fff}
+.title{font-size:28px;font-weight:800;margin:6px 0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:0 8px 24px rgba(16,24,40,.06)}
+form{display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:720px){form{grid-template-columns:1fr 1fr}.full{grid-column:1/-1}}
+label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+input,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:15px}
+input[readonly]{background:#fafafa;color:#999}
+.row{display:flex;gap:10px}
+.btn{appearance:none;border:0;background:var(--pri);color:#fff;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600}
+.btn:hover{background:var(--pri-600)}
+.btn.light{background:#f0f3f8;color:#234}
+.btn.red{background:var(--danger)}
+.toolbar{display:flex;gap:8px;align-items:center}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;font-size:14px}
+.table th{color:#3a3a46}
+.chip{display:inline-block;padding:3px 8px;border-radius:999px;font-size:12px;background:#eef4ff;border:1px solid #d9e6ff}
+.muted{color:var(--muted);font-size:13px}
+.toast{position:fixed;right:16px;bottom:16px;background:#111;color:#fff;padding:10px 14px;border-radius:10px;opacity:0;transform:translateY(8px);transition:.25s}
+.toast.show{opacity:1;transform:none}
+.searchbar{display:flex;gap:8px;margin-bottom:10px}
+input.is-invalid, select.is-invalid{border-color:#e53935; outline:0}
